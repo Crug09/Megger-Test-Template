@@ -53,25 +53,18 @@ class MainScreen(Screen):
 
                     today_date = datetime.datetime.now().strftime('%Y-%m-%d')
                     file_name = f"{customer_name}_Megger_Test_{today_date}.xlsx"
-                    print(file_name)
-
-                    
-                    print(megger_test)
 
                     phase_results = [int(phase_1), int(phase_2), int(phase_3), ' ']
-                    print(phase_results)
                     
                     if os.path.exists(file_name):
                         workbook = load_workbook(file_name)
                         sheet = workbook.active
                         workbook.save(file_name)
-                        print(f"Opened existing file: {file_name}")
                     else:
                         workbook = Workbook()
                         sheet = workbook.active
                         sheet.title = "Sheet1"
                         workbook.save(file_name)
-                        print(f"Created new file: {file_name}")
 
                     workbook = load_workbook(file_name)
 
@@ -79,20 +72,16 @@ class MainScreen(Screen):
                     row_number = 1
                     row = sheet[row_number]
                     components = [cell.value for cell in row if cell.value is not None]
-                    print(components)
 
                     if megger_test in components:
-                        print('Yep')
-                        
+                        pass                        
                     else:
-                        print('Nope')
                         last_column = sheet.max_column
                         new_column = last_column + 1
                         cell = sheet.cell(row=row_number, column=new_column)
                         cell.value = megger_test
                         workbook.save(file_name) 
         
-                    print('starting')
                     red_fill = PatternFill(start_color="FF0000", end_color="FF0000", fill_type="solid")  # Red background
                     yellow_fill = PatternFill(start_color="FFFF00", end_color="FFFF00", fill_type="solid")  # Yellow background
                     green_fill = PatternFill(start_color="00FF00", end_color="00FF00", fill_type="solid")  # Green background
@@ -110,18 +99,15 @@ class MainScreen(Screen):
                             start_row += 1
 
                         for i, (item, phase) in enumerate(zip(phase_results, phase_labels)):
-                            # Add phase label to the first column
                             phase_cell = sheet.cell(row=start_row + i, column=1)
                             phase_cell.value = phase
                             
-                            # Add data to the target column
                             data_cell = sheet.cell(row=start_row + i, column=target_column)
                             data_cell.value = item
 
-                        for row in range(start_row, start_row + len(phase_results)):  # Only process the rows where data was added
+                        for row in range(start_row, start_row + len(phase_results)): 
                             cell = sheet.cell(row=row, column=target_column)
                             
-                            # Check if the cell's value is a number
                             if cell.value is not None and isinstance(cell.value, (int, float)):
                                 if 0 <= cell.value <= 349:
                                     cell.fill = red_fill
@@ -131,6 +117,9 @@ class MainScreen(Screen):
                                     cell.fill = green_fill
 
                         workbook.save(file_name)
+                        megger_test = megger_test.replace('__', ' and ')
+                        megger_test = megger_test.replace('_', ' ')
+                        self.ids.megger_test_id.text = f'Added:\n{megger_test}\nWith the data being:{phase_results[:3]}'
                 else:
                     self.ids.megger_test_id.text = 'Enter a component'
 
@@ -160,7 +149,6 @@ class MainScreen(Screen):
 
 class NamesScreen(Screen):
     def update_file_list(self, file_names):
-        # Update the text of the label with the list of file names
         if file_names:
             self.ids.file_list_label.text = '\n'.join(file_names)
         else:
@@ -169,18 +157,14 @@ class NamesScreen(Screen):
 class ScreenManagement(ScreenManager):
     pass
 
-# Build the application
 class MyKivyApp(App):
     def build(self):
-        # Load both KV files
         Builder.load_file('main.kv')
-        Builder.load_file('name.kv')
+        # Builder.load_file('name.kv')
         
-        # Create the ScreenManager and add screens
         sm = ScreenManagement()
         sm.add_widget(MainScreen(name='main_screen'))
         sm.add_widget(NamesScreen(name='name_screen'))
-        
         return sm
 
     

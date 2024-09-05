@@ -6,7 +6,7 @@
         
         TextInput:
             id: customer_name
-            text: 'Dylan Cook'
+            text: ''
             hint_text: 'Enter Customers Name'
             size_hint_y: None
             height: 40 
@@ -70,7 +70,7 @@
         
 
         TextInput:
-            text: '100'
+            text: ''
             id: phase_1
             hint_text: 'Enter Phase 1'
             size_hint_y: None
@@ -81,7 +81,7 @@
             input_filter: 'int'
         
         TextInput:
-            text: '400'
+            text: ''
             id: phase_2
             hint_text: 'Enter Phase 2'
             size_hint_y: None
@@ -92,7 +92,7 @@
             input_filter: 'int'
         
         TextInput:
-            text: '550'
+            text: ''
             id: phase_3
             hint_text: 'Enter Phase 3'
             size_hint_y: None
@@ -133,3 +133,38 @@
                 app.show_excel_files()
                 root.manager.transition.direction='left'
                 root.manager.current = 'name_screen'
+
+<NamesScreen>:
+
+    BoxLayout:
+        orientation: 'vertical'
+        padding: [10, 50, 10, 10]  
+        spacing: 10
+
+        ScrollView:
+            size_hint: (1, 1)
+            do_scroll_x: False
+            do_scroll_y: True
+
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_y: None
+                height: self.minimum_height 
+
+                Label:
+                    id: file_list_label
+                    font_size: 32
+                    size_hint_y: None
+                    height: self.texture_size[1]  
+                    width: self.texture_size[0] 
+
+
+
+        Button:
+            text: 'Go to Home'
+            spacing: 10
+            size_hint_y: None
+            height: 70 
+            on_press: 
+                root.manager.transition.direction='right'
+                root.manager.current = 'main_screen'
